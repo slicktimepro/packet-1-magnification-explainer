@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Packet 1: Magnification &amp; Scientific Observation — Interactive Explainer</title>
+  <style>
+    :root {
+      --bg-cream: #fdf8ee;
+      --ink-navy: #172542;
+      --slate-muted: #4b5d7a;
+      --accent-teal: #0e7c7b;
+      --accent-amber: #d97706;
+      --accent-plum: #6d28d9;
+      --accent-emerald: #15803d;
+      --card-white: #ffffff;
+      --border-soft: #d7e0ee;
+      --highlight-bg: #eef7f6;
+      --shadow-soft: 0 8px 24px rgba(23, 37, 66, 0.08);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(180deg, #fdf8ee 0%, #f1f6fc 100%);
+      color: var(--ink-navy);
+      line-height: 1.55;
+    }
+
+    .page-shell {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 24px 18px 56px;
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, #172542 0%, #1e3a6e 55%, #0e7c7b 100%);
+      color: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 20px;
+    }
+
+    .brand-tag {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .hero-banner h1 { margin: 0 0 8px; font-size: 1.85rem; line-height: 1.2; }
+    .hero-subtitle { margin: 0 0 16px; font-size: 1rem; color: #e6f2f1; max-width: 780px; }
+    .meta-pills { display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.86rem; }
+
+    .meta-pill {
+      background: rgba(15, 23, 42, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    .meta-pill a { color: #fde68a; font-weight: 700; text-decoration: underline; }
+
+    .step-nav {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    @media (max-width: 720px) { .step-nav { grid-template-columns: 1fr; } }
+
+    .step-btn {
+      background: var(--card-white);
+      border: 2px solid var(--border-soft);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      box-shadow: 0 3px 10px rgba(23, 37, 66, 0.04);
+    }
+
+    .step-btn:hover { border-color: var(--accent-teal); transform: translateY(-1px); }
+    .step-btn.active { background: var(--highlight-bg); border-color: var(--accent-teal); box-shadow: 0 6px 18px rgba(14, 124, 123, 0.15); }
+    .step-num { display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--accent-teal); margin-bottom: 3px; }
+    .step-title { display: block; font-size: 1rem; font-weight: 700; color: var(--ink-navy); }
+
+    .panel {
+      display: none;
+      background: var(--card-white);
+      border: 2px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 22px;
+    }
+
+    .panel.active { display: block; }
+
+    .panel-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 2px solid #edf2f7;
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+    }
+
+    .panel-header h2 { margin: 0; font-size: 1.4rem; }
+    .badge-chip {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #f59e0b;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .lab-grid { display: grid; grid-template-columns: 1.35fr 1fr; gap: 20px; align-items: start; }
+    @media (max-width: 860px) { .lab-grid { grid-template-columns: 1fr; } }
+
+    .canvas-box { background: #f8fafc; border: 2px solid #cbd5e1; border-radius: var(--radius-md); padding: 14px; }
+    svg#lensSim { width: 100%; height: auto; display: block; border-radius: var(--radius-sm); background: #ffffff; border: 1px solid #e2e8f0; }
+
+    .controls-box { background: #fdfaf2; border: 1.5px solid #e6dcc3; border-radius: var(--radius-md); padding: 18px; }
+    .control-group { margin-bottom: 18px; }
+    .control-group label { display: flex; justify-content: space-between; font-weight: 700; font-size: 0.95rem; margin-bottom: 6px; }
+    input[type="range"] { width: 100%; accent-color: var(--accent-teal); cursor: pointer; }
+
+    .specimen-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .specimen-btn {
+      padding: 7px 12px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--ink-navy);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .specimen-btn.selected { background: var(--accent-teal); color: #ffffff; border-color: var(--accent-teal); }
+
+    .status-banner { margin-top: 12px; padding: 12px 14px; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.92rem; }
+    .status-sharp { background: #dcfce7; color: #14532d; border: 1.5px solid #22c55e; }
+    .status-blur { background: #fef3c7; color: #78350f; border: 1.5px solid #f59e0b; }
+
+    .term-callout {
+      margin-top: 14px;
+      padding: 12px 14px;
+      background: #eef2ff;
+      border-left: 4px solid var(--accent-plum);
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+    }
+
+    .vocab-layout { display: grid; grid-template-columns: 1fr 1.25fr; gap: 20px; }
+    @media (max-width: 820px) { .vocab-layout { grid-template-columns: 1fr; } }
+
+    .vocab-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      margin-bottom: 10px;
+    }
+
+    .vocab-term-left { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+    .hint-btn {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #7dd3fc;
+      border-radius: 6px;
+      padding: 4px 9px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    select.match-select {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1.5px solid #94a3b8;
+      font-weight: 700;
+      font-size: 0.9rem;
+      background: #ffffff;
+      color: var(--ink-navy);
+      cursor: pointer;
+    }
+
+    select.match-select.correct { border-color: #16a34a; background: #dcfce7; color: #14532d; }
+    select.match-select.incorrect { border-color: #dc2626; background: #fee2e2; color: #7f1d1d; }
+
+    .def-card {
+      background: #fffdf7;
+      border: 1.5px solid #e5dec9;
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      margin-bottom: 10px;
+      font-size: 0.93rem;
+    }
+
+    .def-letter {
+      display: inline-block;
+      background: var(--ink-navy);
+      color: #ffffff;
+      font-weight: 700;
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+      text-align: center;
+      border-radius: 50%;
+      margin-right: 8px;
+      font-size: 0.84rem;
+    }
+
+    .scaffold-box {
+      margin-top: 12px;
+      padding: 12px 14px;
+      background: #f0fdf4;
+      border: 1.5px dashed #16a34a;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      min-height: 52px;
+    }
+
+    .action-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; align-items: center; }
+    .btn-primary {
+      background: var(--accent-teal);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 10px 18px;
+      font-weight: 700;
+      font-size: 0.94rem;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      background: #e2e8f0;
+      color: var(--ink-navy);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 10px 16px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .score-readout { font-weight: 700; font-size: 0.96rem; margin-left: 6px; }
+
+    .q-card {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .q-card h3 { margin: 0 0 10px; font-size: 1rem; }
+
+    .opt-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 9px 13px;
+      margin-bottom: 7px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--ink-navy);
+      font-size: 0.91rem;
+      cursor: pointer;
+    }
+    .opt-btn.right { background: #dcfce7; border-color: #16a34a; font-weight: 700; }
+    .opt-btn.wrong { background: #fee2e2; border-color: #dc2626; }
+    .feedback-note { font-size: 0.88rem; font-weight: 700; margin-top: 6px; color: #1e3a8a; }
+
+    .bundle-footer {
+      background: #eef7f6;
+      border: 1.5px solid #99d5cf;
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-top: 18px;
+    }
+    .bundle-footer h3 { margin: 0 0 8px; font-size: 1.05rem; color: #0f5c5b; }
+    .bundle-footer ul { margin: 6px 0 0; padding-left: 20px; }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero-banner">
+      <div class="brand-tag">Slick Time Productions • Packet 1 of 6 • Grades 2–5 NGSS</div>
+      <h1>Magnification &amp; Scientific Observation</h1>
+      <p class="hero-subtitle">
+        Interactive HTML5 Explainer Lesson scaffolding <strong>Part 1: Lens &amp; Observation Vocabulary Match</strong>
+        for <em>The Great &#25918;&#22823; (F&agrave;ngd&agrave;): A Magnification Spell</em>.
+      </p>
+      <div class="meta-pills">
+        <div class="meta-pill">Episode: <a href="https://youtu.be/UXUBMZNJncQ" target="_blank" rel="noopener">YouTube Video</a></div>
+        <div class="meta-pill">Game: <a href="https://slicktimepro.github.io/tansys-waterproof-check/" target="_blank" rel="noopener">Tansy's Waterproof Check!</a></div>
+        <div class="meta-pill">NGSS Focus: 2-PS1-1 &amp; 4-PS4-2</div>
+      </div>
+    </header>
+
+    <nav class="step-nav" aria-label="Lesson Stages">
+      <button class="step-btn active" data-step="1" onclick="showStep(1)">
+        <span class="step-num">Step 1 • Visual Lab</span>
+        <span class="step-title">Convex Lens &amp; Focal Point</span>
+      </button>
+      <button class="step-btn" data-step="2" onclick="showStep(2)">
+        <span class="step-num">Step 2 • Vocabulary Scaffold</span>
+        <span class="step-title">Part 1 Match (1–5 to A–E)</span>
+      </button>
+      <button class="step-btn" data-step="3" onclick="showStep(3)">
+        <span class="step-num">Step 3 • Exit Check</span>
+        <span class="step-title">Observation &amp; Packet Guide</span>
+      </button>
+    </nav>
+
+    <section id="step-1" class="panel active">
+      <div class="panel-header">
+        <h2>Step 1: How a Convex Lens Creates Sharp Micro-Details</h2>
+        <span class="badge-chip">Drag Distance Slider to Find the Focal Point</span>
+      </div>
+
+      <div class="lab-grid">
+        <div class="canvas-box">
+          <svg id="lensSim" viewBox="0 0 640 310" role="img" aria-label="Convex lens ray diagram showing object, focal point, and magnified micro-details">
+            <defs>
+              <pattern id="gridPattern" width="32" height="32" patternUnits="userSpaceOnUse">
+                <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#f1f5f9" stroke-width="1"/>
+              </pattern>
+            </defs>
+            <rect width="640" height="310" fill="url(#gridPattern)" />
+            <line x1="25" y1="165" x2="615" y2="165" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="6,4" />
+            <rect id="focalZone" x="195" y="45" width="40" height="225" fill="#bbf7d0" fill-opacity="0.45" stroke="#16a34a" stroke-dasharray="4,3" />
+            <text x="215" y="36" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#15803d">Focal Zone</text>
+            <line id="rayTop" x1="150" y1="125" x2="330" y2="105" stroke="#d97706" stroke-width="2" />
+            <line id="rayBottom" x1="150" y1="165" x2="330" y2="225" stroke="#0284c7" stroke-width="2" />
+            <line id="rayBentTop" x1="330" y1="105" x2="535" y2="150" stroke="#d97706" stroke-width="2" stroke-dasharray="5,3" />
+            <line id="rayBentBottom" x1="330" y1="225" x2="535" y2="180" stroke="#0284c7" stroke-width="2" stroke-dasharray="5,3" />
+            <path d="M 330 55 Q 354 165 330 275 Q 306 165 330 55 Z" fill="#bae6fd" fill-opacity="0.72" stroke="#0369a1" stroke-width="2.5" />
+            <text x="330" y="295" text-anchor="middle" font-size="12" font-weight="bold" fill="#0369a1">Convex Lens</text>
+            <g id="specimenGroup" transform="translate(150, 165)">
+              <circle id="specimenShape" cx="0" cy="-22" r="20" fill="#fbbf24" stroke="#92400e" stroke-width="2.2" />
+              <circle id="microDot1" cx="-6" cy="-26" r="3" fill="#92400e" />
+              <circle id="microDot2" cx="6" cy="-18" r="3" fill="#92400e" />
+              <text id="specimenLabel" x="0" y="18" text-anchor="middle" font-size="11" font-weight="bold" fill="#172542">Specimen</text>
+            </g>
+            <rect x="425" y="45" width="185" height="175" rx="12" fill="#ffffff" stroke="#0e7c7b" stroke-width="2" />
+            <text x="517" y="66" text-anchor="middle" font-size="11.5" font-weight="bold" fill="#0e7c7b">Magnified View</text>
+            <g id="magnifiedPreview" transform="translate(517, 136)">
+              <circle id="magCircle" cx="0" cy="0" r="36" fill="#fde68a" stroke="#b45309" stroke-width="2.5" />
+              <g id="magDetails"></g>
+            </g>
+            <text id="magCaption" x="517" y="206" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">Adjusting focus...</text>
+          </svg>
+        </div>
+
+        <div class="controls-box">
+          <div class="control-group">
+            <label for="distanceSlider">
+              <span>Lens-to-Object Distance:</span>
+              <span id="distanceValue">180 mm</span>
+            </label>
+            <input id="distanceSlider" type="range" min="60" max="240" value="180" oninput="updateLensSim()" />
+            <small style="color: var(--slate-muted);">Sweet spot (Focal Point): ~115 mm</small>
+          </div>
+
+          <div class="control-group">
+            <label><span>Choose a Specimen to Inspect:</span></label>
+            <div class="specimen-row">
+              <button class="specimen-btn selected" data-spec="scales" onclick="selectSpecimen('scales')">Fish Scales</button>
+              <button class="specimen-btn" data-spec="fabric" onclick="selectSpecimen('fabric')">Woven Thread</button>
+              <button class="specimen-btn" data-spec="sponge" onclick="selectSpecimen('sponge')">Sponge Pores</button>
+            </div>
+          </div>
+
+          <div id="focusStatus" class="status-banner status-blur">
+            Slightly out of focus — slide closer to ~115 mm to hit the focal point!
+          </div>
+
+          <div class="term-callout" id="lensTermNote">
+            <strong>Convex Lens &amp; Focal Point:</strong> A convex lens curves outward to bend light rays. When the object sits right at the <strong>focal point</strong>, <strong>micro-details</strong> snap into sharp focus so your <strong>observation</strong> is accurate.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="step-2" class="panel">
+      <div class="panel-header">
+        <h2>Step 2: Part 1 — Lens &amp; Observation Vocabulary Match</h2>
+        <span class="badge-chip">Match 1–5 to Definitions A–E</span>
+      </div>
+      <p style="margin-top: 0;">
+        Write (or select) the letter of the correct definition next to each science word. Click <strong>Clue</strong> next to any term if you want a scaffolded hint before checking your answers.
+      </p>
+
+      <div class="vocab-layout">
+        <div>
+          <div class="vocab-item">
+            <div class="vocab-term-left"><span>1. Magnification</span><button class="hint-btn" onclick="showClue('magnification')">Clue</button></div>
+            <select class="match-select" id="match-1" data-term="1" onchange="liveCheck()">
+              <option value="">-- Letter --</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option>
+            </select>
+          </div>
+          <div class="vocab-item">
+            <div class="vocab-term-left"><span>2. Convex Lens</span><button class="hint-btn" onclick="showClue('lens')">Clue</button></div>
+            <select class="match-select" id="match-2" data-term="2" onchange="liveCheck()">
+              <option value="">-- Letter --</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option>
+            </select>
+          </div>
+          <div class="vocab-item">
+            <div class="vocab-term-left"><span>3. Observation</span><button class="hint-btn" onclick="showClue('observation')">Clue</button></div>
+            <select class="match-select" id="match-3" data-term="3" onchange="liveCheck()">
+              <option value="">-- Letter --</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option>
+            </select>
+          </div>
+          <div class="vocab-item">
+            <div class="vocab-term-left"><span>4. Micro-Details</span><button class="hint-btn" onclick="showClue('micro')">Clue</button></div>
+            <select class="match-select" id="match-4" data-term="4" onchange="liveCheck()">
+              <option value="">-- Letter --</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option>
+            </select>
+          </div>
+          <div class="vocab-item">
+            <div class="vocab-term-left"><span>5. Focal Point</span><button class="hint-btn" onclick="showClue('focal')">Clue</button></div>
+            <select class="match-select" id="match-5" data-term="5" onchange="liveCheck()">
+              <option value="">-- Letter --</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option>
+            </select>
+          </div>
+
+          <div id="clueBox" class="scaffold-box">
+            <strong>Scaffold Clue Box:</strong> Select a <em>Clue</em> button on the left to see a kid-friendly hint connecting the word to real objects.
+          </div>
+
+          <div class="action-bar">
+            <button class="btn-primary" onclick="gradeVocabulary()">Check Answers</button>
+            <button class="btn-secondary" onclick="resetVocabulary()">Reset</button>
+            <span id="vocabScore" class="score-readout"></span>
+          </div>
+        </div>
+
+        <div>
+          <div class="def-card"><span class="def-letter">A</span> A curved piece of clear glass or plastic that bends light to make objects look bigger.</div>
+          <div class="def-card"><span class="def-letter">B</span> Tiny surface features (like bumps, threads, or scales) too small for the naked eye to see clearly.</div>
+          <div class="def-card"><span class="def-letter">C</span> Making an object appear larger so we can examine hidden structures.</div>
+          <div class="def-card"><span class="def-letter">D</span> The exact distance where a magnified image looks sharpest and clearest.</div>
+          <div class="def-card"><span class="def-letter">E</span> Using your eyes and scientific tools to gather accurate information about an object.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="step-3" class="panel">
+      <div class="panel-header">
+        <h2>Step 3: Quick Concept Check &amp; Packet 1 Contents</h2>
+        <span class="badge-chip">Grades 2–5 Ready</span>
+      </div>
+
+      <div class="q-card">
+        <h3>Quick Check 1: Why does moving a magnifying glass slightly closer or farther change the picture?</h3>
+        <button class="opt-btn" onclick="answerCheck(this, 1, true)">A. Because you are adjusting distance to find the focal point where the image is sharpest.</button>
+        <button class="opt-btn" onclick="answerCheck(this, 1, false)">B. Because glass changes the color of every object into blue.</button>
+        <div id="fb-1" class="feedback-note"></div>
+      </div>
+
+      <div class="q-card">
+        <h3>Quick Check 2: Which choice shows a scientific observation of micro-details?</h3>
+        <button class="opt-btn" onclick="answerCheck(this, 2, false)">A. Guessing how a butterfly wing feels without looking closely.</button>
+        <button class="opt-btn" onclick="answerCheck(this, 2, true)">B. Looking through a lens to spot tiny overlapping scales along the edge of a wing.</button>
+        <div id="fb-2" class="feedback-note"></div>
+      </div>
+
+      <div class="bundle-footer">
+        <h3>What Is Included in Packet 1 of 6 (Magnification &amp; Scientific Observation)</h3>
+        <ul>
+          <li><strong>The "Packet 1 Magnification and Scientific Observation" 3-page Teachers Pay Teachers companion document</strong> (Student Concept &amp; Vocabulary Worksheet, Hands-On Zoom-In Mini-Lab, and Teacher Guide with NGSS alignment + Answer Key).</li>
+          <li><strong>Access to this HTML5 Magnification Explainer Lesson</strong> (interactive convex lens &amp; focal point simulator, scaffolded Part 1 vocabulary matcher with clues, and quick concept checks).</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const ANSWER_KEY = { "1": "C", "2": "A", "3": "E", "4": "B", "5": "D" };
+    const CLUES = {
+      magnification: "<strong>1. Magnification:</strong> Think about zooming in on a photo—it makes the whole subject look bigger so you can inspect hidden parts.",
+      lens: "<strong>2. Convex Lens:</strong> Picture the rounded dome of a magnifying glass made of clear glass or plastic that bends incoming light.",
+      observation: "<strong>3. Observation:</strong> A scientist records what is actually seen with the eyes or tools—not a wild guess.",
+      micro: "<strong>4. Micro-Details:</strong> \"Micro-\" means very small; look for tiny surface features that are hard to see with just your eyes alone.",
+      focal: "<strong>5. Focal Point:</strong> Hold a magnifying glass too close or too far and it looks blurry; find the sweet spot where it looks sharpest!"
+    };
+
+    let currentSpecimen = "scales";
+
+    function showStep(stepNum) {
+      document.querySelectorAll(".step-btn").forEach((btn) => {
+        btn.classList.toggle("active", Number(btn.dataset.step) === stepNum);
+      });
+      document.querySelectorAll(".panel").forEach((panel) => {
+        panel.classList.remove("active");
+      });
+      document.getElementById(`step-${stepNum}`).classList.add("active");
+    }
+
+    function selectSpecimen(spec) {
+      currentSpecimen = spec;
+      document.querySelectorAll(".specimen-btn").forEach((btn) => {
+        btn.classList.toggle("selected", btn.dataset.spec === spec);
+      });
+      updateLensSim();
+    }
+
+    function updateLensSim() {
+      const slider = document.getElementById("distanceSlider");
+      const dist = Number(slider.value);
+      document.getElementById("distanceValue").textContent = `${dist} mm`;
+
+      const objX = Math.round(255 - ((dist - 60) / 180) * 145);
+      document.getElementById("specimenGroup").setAttribute("transform", `translate(${objX}, 165)`);
+      document.getElementById("rayTop").setAttribute("x1", objX);
+      document.getElementById("rayBottom").setAttribute("x1", objX);
+
+      const error = Math.abs(dist - 115);
+      const sharpness = Math.max(0, 1 - error / 95);
+
+      const magGroup = document.getElementById("magnifiedPreview");
+      const blurPx = ((1 - sharpness) * 4.5).toFixed(1);
+      const scaleVal = (1.15 + sharpness * 0.45).toFixed(2);
+      magGroup.setAttribute("transform", `translate(517, 136) scale(${scaleVal})`);
+      magGroup.style.filter = `blur(${blurPx}px)`;
+
+      const magCircle = document.getElementById("magCircle");
+      const magDetails = document.getElementById("magDetails");
+      const magCaption = document.getElementById("magCaption");
+      const specShape = document.getElementById("specimenShape");
+      const specLabel = document.getElementById("specimenLabel");
+
+      if (currentSpecimen === "scales") {
+        specShape.setAttribute("fill", "#38bdf8");
+        specShape.setAttribute("stroke", "#0369a1");
+        specLabel.textContent = "Fish Scale";
+        magCircle.setAttribute("fill", "#e0f2fe");
+        magCircle.setAttribute("stroke", "#0284c7");
+        magDetails.innerHTML = `
+          <path d="M -24 -8 Q -12 -18 0 -8 Q 12 -18 24 -8" fill="none" stroke="#0369a1" stroke-width="2.2"/>
+          <path d="M -24 4 Q -12 -6 0 4 Q 12 -6 24 4" fill="none" stroke="#0369a1" stroke-width="2.2"/>
+          <path d="M -24 16 Q -12 6 0 16 Q 12 6 24 16" fill="none" stroke="#0369a1" stroke-width="2.2"/>
+        `;
+      } else if (currentSpecimen === "fabric") {
+        specShape.setAttribute("fill", "#f87171");
+        specShape.setAttribute("stroke", "#991b1b");
+        specLabel.textContent = "Cloth Fiber";
+        magCircle.setAttribute("fill", "#fee2e2");
+        magCircle.setAttribute("stroke", "#dc2626");
+        magDetails.innerHTML = `
+          <line x1="-26" y1="-12" x2="26" y2="-12" stroke="#b91c1c" stroke-width="3"/>
+          <line x1="-26" y1="0" x2="26" y2="0" stroke="#ef4444" stroke-width="3"/>
+          <line x1="-26" y1="12" x2="26" y2="12" stroke="#b91c1c" stroke-width="3"/>
+          <line x1="-12" y1="-26" x2="-12" y2="26" stroke="#7f1d1d" stroke-width="2.5"/>
+          <line x1="12" y1="-26" x2="12" y2="26" stroke="#7f1d1d" stroke-width="2.5"/>
+        `;
+      } else {
+        specShape.setAttribute("fill", "#facc15");
+        specShape.setAttribute("stroke", "#a16207");
+        specLabel.textContent = "Sponge";
+        magCircle.setAttribute("fill", "#fef9c3");
+        magCircle.setAttribute("stroke", "#ca8a04");
+        magDetails.innerHTML = `
+          <circle cx="-14" cy="-10" r="6" fill="#a16207"/>
+          <circle cx="8" cy="-14" r="4.5" fill="#a16207"/>
+          <circle cx="14" cy="6" r="7" fill="#a16207"/>
+          <circle cx="-8" cy="11" r="5" fill="#a16207"/>
+        `;
+      }
+
+      const statusEl = document.getElementById("focusStatus");
+      if (error <= 15) {
+        statusEl.className = "status-banner status-sharp";
+        statusEl.textContent = "Sharp Focus! You found the focal point—micro-details are clear.";
+        magCaption.textContent = "In Focus (Focal Point)";
+      } else if (dist > 115) {
+        statusEl.className = "status-banner status-blur";
+        statusEl.textContent = "A bit far from the focal point—move the lens closer (~115 mm).";
+        magCaption.textContent = "Too Far (Soft Focus)";
+      } else {
+        statusEl.className = "status-banner status-blur";
+        statusEl.textContent = "Too close to the focal point—pull the lens back slightly (~115 mm).";
+        magCaption.textContent = "Too Close (Soft Focus)";
+      }
+    }
+
+    function showClue(key) { document.getElementById("clueBox").innerHTML = CLUES[key]; }
+
+    function liveCheck() {
+      document.querySelectorAll("select.match-select").forEach((sel) => sel.classList.remove("correct", "incorrect"));
+      document.getElementById("vocabScore").textContent = "";
+    }
+
+    function gradeVocabulary() {
+      let score = 0;
+      const total = Object.keys(ANSWER_KEY).length;
+      Object.keys(ANSWER_KEY).forEach((num) => {
+        const sel = document.getElementById(`match-${num}`);
+        sel.classList.remove("correct", "incorrect");
+        if (sel.value === ANSWER_KEY[num]) {
+          score += 1;
+          sel.classList.add("correct");
+        } else if (sel.value !== "") {
+          sel.classList.add("incorrect");
+        }
+      });
+      document.getElementById("vocabScore").textContent = `Score: ${score} / ${total}`;
+    }
+
+    function resetVocabulary() {
+      document.querySelectorAll("select.match-select").forEach((sel) => {
+        sel.value = "";
+        sel.classList.remove("correct", "incorrect");
+      });
+      document.getElementById("vocabScore").textContent = "";
+      document.getElementById("clueBox").innerHTML =
+        "<strong>Scaffold Clue Box:</strong> Select a <em>Clue</em> button on the left to see a kid-friendly hint connecting the word to real objects.";
+    }
+
+    function answerCheck(btn, qNum, isCorrect) {
+      const parent = btn.parentElement;
+      parent.querySelectorAll(".opt-btn").forEach((b) => b.classList.remove("right", "wrong"));
+      const fb = document.getElementById(`fb-${qNum}`);
+      if (isCorrect) {
+        btn.classList.add("right");
+        fb.textContent = qNum === 1
+          ? "Correct! Finding the focal point brings the image into sharp focus."
+          : "Correct! Using a lens to spot tiny surface structures is a great observation of micro-details.";
+      } else {
+        btn.classList.add("wrong");
+        fb.textContent = "Not quite—try the other choice and check how lenses or observations work.";
+      }
+    }
+
+    updateLensSim();
+  </script>
+</body>
+</html>
